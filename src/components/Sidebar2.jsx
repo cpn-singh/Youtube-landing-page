@@ -16,7 +16,7 @@ const Sidebar2 = () => {
   return (
     <div 
       id="youtube-main-sidebar2"
-      className="hidden absolute top-0 left-0 w-full h-full py-2 bg-white select-none overflow-hidden"
+      className="hidden absolute top-0 left-0 w-full h-full py-2  bg-white select-none overflow-hidden"
     >
       <div className="px-2 space-y-0.5">
         {sidebarItems.map((item) => {

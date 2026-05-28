@@ -65,7 +65,7 @@ const Sidebar = () => {
     : exploreItems.slice(0, 3);
 
   return (
-    <div id="youtube-main-sidebar" className="absolute top-0 left-0 w-full h-full py-2 overflow-y-auto overflow-x-hidden select-none bg-white">
+    <div id="youtube-main-sidebar" className="absolute top-0 left-0 w-full h-full py-2 [&::-webkit-scrollbar]:hidden overflow-y-auto overflow-x-hidden select-none bg-white">
       {/* Primary Section */}
       <div className="px-2 space-y-0.5">
         {sidebarItems.map((item) => {
