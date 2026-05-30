@@ -32,7 +32,7 @@ if (mainSidebar && miniSidebar && sidebarWrapper) {
   }
   };
   return (
-    <div className="flex justify-between items-center fixed top-0 w-[100%] bg-white px-6 py-2">
+    <div className="flex z-50 justify-between items-center fixed top-0 w-[100%] bg-white px-6 py-2">
       <div className="flex items-center gap-5">
         <AiOutlineMenu className="cursor-pointer text-2xl" onClick={toggleSidebarMenu}/>
         <img className="w-27 cursor-pointer" src={logo} alt="" />

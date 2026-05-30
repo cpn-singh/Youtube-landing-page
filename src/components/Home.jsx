@@ -4,10 +4,13 @@ import Sidebar2 from "./Sidebar2";
 import Video from "./Video";
 import { useAuth } from "../context/AuthProvider";
 import ListItems from "./ListItems";
+import Loader from "../loader/Loader";
 
 const Home = () => {
-  const { data } = useAuth();
-  console.log(data);
+  const { data, loading } = useAuth();
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <div className="pt-12 mt-2 flex items-start justify-start gap-4">
       <div
@@ -23,7 +26,7 @@ const Home = () => {
           {data.length > 0 &&
             data.map((item) => {
               if (item.type !== "video") return false;
-              return <Video key={item.id} video={item?.video} />;
+              return <Video key={item.videoid} video={item?.video} />;
             })}
         </div>
       </div>

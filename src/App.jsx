@@ -3,8 +3,14 @@ import Navbar from "./components/Navbar";
 import PlayingVideo from "./components/PlayingVideo";
 import Search from "./components/Search";
 import {Routes, Route} from "react-router-dom";
+import Loader from "./loader/Loader";
+import { useAuth } from "./context/AuthProvider";
 
 function App() {
+  const {loading} = useAuth()
+  if(loading){
+    return (<Loader />)
+  }
   return (
     <div className="">
       <Navbar />
