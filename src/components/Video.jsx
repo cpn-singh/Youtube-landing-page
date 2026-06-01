@@ -1,47 +1,77 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Time from "../loader/Time";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 
 const Video = ({ video }) => {
+  const snippet = video?.snippet;
+
+  const currentVideoId =
+    video?.id?.videoId || video?.id;
+
+  const thumbnail =
+    snippet?.thumbnails?.high?.url ||
+    snippet?.thumbnails?.medium?.url ||
+    snippet?.thumbnails?.default?.url;
+
+  const channelAvatar =
+    snippet?.channelThumbnail?.[0]?.url ||
+    snippet?.channelThumbnail?.url ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      snippet?.channelTitle || "YouTube"
+    )}&background=random&size=128`;
+
   return (
-    <div className="max-w-sm overflow-hidden rounded-xl hover:bg-pink-200/50 cursor-pointer transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_0_20px_5px_rgba(236,72,153,0.55)] hover:shadow-pink-500/50">
-      <Link to={`/video/${video.videoId}`}>
+    <div className="max-w-sm overflow-hidden rounded-xl bg-white p-2 hover:bg-gray-50 cursor-pointer transition-all duration-200 ease-out">
+      <Link to={`/video/${currentVideoId}`}>
         <div className="flex flex-col">
-          <div className="relative h-48 md:h-56 md:rounded-xl duration-200 overflow-hidden ">
+          
+          {/* Thumbnail */}
+          <div className="relative h-48 md:h-52 rounded-xl overflow-hidden bg-gray-100">
             <img
-              className="h-full w-full pt-2 object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-              src={video?.thumbnails[0]?.url}
-              alt=""
+              src={thumbnail}
+              alt={snippet?.title || "Thumbnail"}
+              className="h-full w-full object-cover"
             />
-            {video?.lengthSeconds && <Time time={video?.lengthSeconds} />}
           </div>
-          <div className="mt-2 flex items-start gap-3">
-            <div className="w-8 h-8 overflow-hidden rounded-full flex-shrink-0">
-              <img src={video?.author?.avatar[0]?.url} alt="" />
-            </div>
-            <div>
-              <h2 className="text-base font-medium line-clamp-2">
-                {video?.title}
+
+          {/* Video Info */}
+          <div className="mt-3 flex items-start gap-3 px-1">
+            
+            {/* Channel Avatar */}
+            <img
+              src={channelAvatar}
+              alt={snippet?.channelTitle}
+              className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-gray-200"
+              onError={(e) => {
+                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                  snippet?.channelTitle || "YouTube"
+                )}&background=random&size=128`;
+              }}
+            />
+
+            <div className="flex-1 min-w-0">
+              <h2 className="text-sm font-medium text-zinc-900 line-clamp-2 leading-tight">
+                {snippet?.title}
               </h2>
-              <p className="text-sm flex items-center gap-2 text-gray-500">
-                {video?.author?.title}{" "}
-                <span>
-                  {" "}
-                  {video?.author?.badges[0]?.type === "VERIFIED_CHANNEL" && (
-                    <BsFillCheckCircleFill className="text-gray-500 text-sm" />
-                  )}
-                </span>
+
+              <p className="text-xs flex items-center gap-1 text-zinc-600 mt-1">
+                {snippet?.channelTitle}
+                <BsFillCheckCircleFill className="text-zinc-400 text-[11px]" />
               </p>
-              <div className="flex gap-2">
-                <p className="text-sm text-gray-500">
-                  {video?.stats?.views} views
-                </p>
-                <p className="text-sm text-gray-500">
-                  {video?.publishedTimeText}
-                </p>
+
+              <div className="flex items-center gap-1.5 text-xs text-zinc-500 mt-1">
+                <span>Recommended</span>
+                <span>•</span>
+                <span>
+                  {snippet?.publishedAt
+                    ? new Date(
+                        snippet.publishedAt
+                      ).toLocaleDateString()
+                    : ""}
+                </span>
               </div>
             </div>
+
           </div>
         </div>
       </Link>

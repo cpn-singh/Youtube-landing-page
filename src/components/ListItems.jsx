@@ -1,9 +1,12 @@
 import React, { useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { useAuth } from "../context/AuthProvider"; // 🔑 Import the shared state hook
 
 const ListItems = () => {
-  // 1. Create a reference to the scrollable container
   const scrollContainerRef = useRef(null);
+  
+  // 1. Grab your search trigger states from the unified Auth Context
+  const { value, setValue } = useAuth();
 
   const categories = [
     "All", "Music", "React routers", "Computer programming",
@@ -13,10 +16,9 @@ const ListItems = () => {
     "Football", "Learn Coding",
   ];
 
-  // 2. Handle scroll logic
   const handleScroll = (direction) => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 200; // Adjust how many pixels it slides per click
+      const scrollAmount = 200;
       if (direction === "left") {
         scrollContainerRef.current.scrollLeft -= scrollAmount;
       } else {
@@ -26,39 +28,50 @@ const ListItems = () => {
   };
 
   return (
-    // Relative wrapper container holds both the list and the absolute-positioned buttons
-    <div className="relative w-full flex items-center group">
+    <div className="relative w-full flex items-center group bg-white">
       
-      {/* Left Button */}
+      {/* Left Slider Trigger Button */}
       <button
         onClick={() => handleScroll("left")}
-        className="absolute left-0 z-10 p-2 m-1 bg-white/90 rounded-full shadow-md hover:bg-gray-100 duration-200 cursor-pointer hidden group-hover:block border border-gray-200"
+        className="absolute left-0 z-10 p-2 m-1 bg-white/95 rounded-full shadow-md hover:bg-gray-100 duration-200 cursor-pointer hidden group-hover:block border border-gray-200"
       >
         <FaChevronLeft className="text-gray-600 text-sm" />
       </button>
 
-      {/* Scrollable Container */}
+      {/* Horizontal Tag Runner Track */}
       <div
         ref={scrollContainerRef}
         className="flex overflow-x-scroll scroll-smooth w-full [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
         <div className="flex space-x-3 flex-nowrap py-2 px-1">
-          {/* Note: changed key from category.id to index since categories are strings, not objects */}
-          {categories.map((category, index) => (
-            <button
-              key={index}
-              className="flex-none text-[14px] bg-gray-100 hover:bg-gray-200 duration-200 rounded-lg px-2 font-normal text-zinc-950 cursor-pointer border border-transparent whitespace-nowrap active:bg-black active:text-white"
-            >
-              {category}
-            </button>
-          ))}
+          {categories.map((category, index) => {
+            /* 2. Determine if this button is currently selected. 
+               We handle 'All' mapping safely to your API's initial state ("New").
+            */
+            const isActive = category === value || (category === "All" && value === "New");
+
+            return (
+              <button
+                key={index}
+                // 3. Update the API query parameters inside your context upon click
+                onClick={() => setValue(category === "All" ? "New" : category)}
+                className={`flex-none text-[14px] duration-150 rounded-lg px-3 py-1 font-normal cursor-pointer whitespace-nowrap text-sm ${
+                  isActive
+                    ? "bg-zinc-900 text-white font-medium shadow-sm" // Persistent active state styling matching real YouTube
+                    : "bg-gray-100 text-zinc-950 hover:bg-gray-200"
+                }`}
+              >
+                {category}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Right Button */}
+      {/* Right Slider Trigger Button */}
       <button
         onClick={() => handleScroll("right")}
-        className="absolute right-0 z-10 p-2 m-1 bg-white/90 rounded-full shadow-md hover:bg-gray-100 duration-200 cursor-pointer hidden group-hover:block border border-gray-200"
+        className="absolute right-0 z-10 p-2 m-1 bg-white/95 rounded-full shadow-md hover:bg-gray-100 duration-200 cursor-pointer hidden group-hover:block border border-gray-200"
       >
         <FaChevronRight className="text-gray-600 text-sm" />
       </button>

@@ -1,39 +1,43 @@
 import React from 'react';
-import { useState } from "react";
+import { useAuth } from "../context/AuthProvider";
 import { GoHome } from "react-icons/go";
 import { SiYoutubeshorts } from "react-icons/si";
 import { MdOutlineSubscriptions } from "react-icons/md";
 import { FaRegUserCircle } from "react-icons/fa";
 
 const Sidebar2 = () => {
-      const [activeId, setActiveId] = useState(1);
-      const sidebarItems = [
-        { id: 1, name: "Home", icon: GoHome },
-        { id: 2, name: "Shorts", icon: SiYoutubeshorts },
-        { id: 3, name: "Subscriptions", icon: MdOutlineSubscriptions },
-        { id: 4, name: "You", icon: FaRegUserCircle }
-      ];
+  // 🔑 Connect to global context states
+  const { value, setValue } = useAuth();
+
+  // CHANGED: IDs are strings to match AuthProvider value sync state
+  const sidebarItems = [
+    { id: "New", name: "Home", icon: GoHome },
+    { id: "Shorts", name: "Shorts", icon: SiYoutubeshorts },
+    { id: "Subscriptions", name: "Subscriptions", icon: MdOutlineSubscriptions },
+    { id: "Your Channel", name: "You", icon: FaRegUserCircle }
+  ];
+
   return (
     <div 
-      id="youtube-main-sidebar2"
-      className="hidden absolute top-0 left-0 w-full h-full py-2  bg-white select-none overflow-hidden"
+      id="youtube-mini-sidebar"
+      className="w-full h-full py-2 bg-white select-none overflow-hidden"
     >
-      <div className="px-2 space-y-0.5">
+      <div className="px-1 space-y-1.5">
         {sidebarItems.map((item) => {
-          const isActive = item.id === activeId;
+          const isActive = item.id === value;
 
           return (
             <div
               key={item.id}
-              onClick={() => setActiveId(item.id)}
-              className={`flex flex-col justify-center gap-1 px-2 py-2 rounded-xl duration-150 cursor-pointer select-none ${
+              onClick={() => setValue && setValue(item.id)}
+              className={`flex flex-col items-center justify-center gap-1 py-3 px-1 rounded-xl duration-150 cursor-pointer select-none ${
                 isActive
-                  ? "bg-gray-200/80 dark:bg-neutral-300 font-medium text-black"
-                  : "hover:bg-gray-100 dark:hover:bg-neutral-200/50 font-normal text-zinc-800"
+                  ? "bg-gray-100 font-medium text-zinc-950"
+                  : "hover:bg-gray-50 font-normal text-zinc-700"
               }`}
             >
-              <item.icon className="text-xl mx-auto" />
-              <span className="text-[10px] text-center">{item.name}</span>
+              <item.icon className="text-xl" />
+              <span className="text-[10px] tracking-tight text-center">{item.name}</span>
             </div>
           );
         })}
