@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchData } from "../utils/rapidapi"; // Updated path to your Google API helper file
+import { fetchData } from "../utils/rapidapi"; 
 import Sidebar from "./Sidebar";
-import Video from "./Video"; // Reusing your fixed Video card structure
+import Video from "./Video"; 
 
 const Search = () => {
   const [result, setResult] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { searchQuery } = useParams(); // Extracts the search term from the URL bar route
-
+  const { searchQuery } = useParams(); 
   useEffect(() => {
     if (searchQuery) {
       fetchSearchResults();
@@ -18,15 +17,9 @@ const Search = () => {
   const fetchSearchResults = async () => {
     setLoading(true);
     try {
-      /* Google API Search Configuration:
-         - q: The query text sent from the navbar
-         - type=video: Excludes channels/playlists so your code loops cleanly
-         - maxResults=25: Standard result depth size
-      */
       const endpoint = `search?part=snippet&maxResults=25&q=${encodeURIComponent(searchQuery)}&type=video`;
       const res = await fetchData(endpoint);
       
-      // Google places search arrays inside 'items'
       setResult(res?.items || []);
     } catch (error) {
       console.error("Error fetching search result datasets:", error);

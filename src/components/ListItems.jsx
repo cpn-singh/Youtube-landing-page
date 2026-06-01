@@ -1,11 +1,9 @@
 import React, { useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
-import { useAuth } from "../context/AuthProvider"; // 🔑 Import the shared state hook
+import { useAuth } from "../context/AuthProvider";
 
 const ListItems = () => {
   const scrollContainerRef = useRef(null);
-  
-  // 1. Grab your search trigger states from the unified Auth Context
   const { value, setValue } = useAuth();
 
   const categories = [
@@ -45,19 +43,15 @@ const ListItems = () => {
       >
         <div className="flex space-x-3 flex-nowrap py-2 px-1">
           {categories.map((category, index) => {
-            /* 2. Determine if this button is currently selected. 
-               We handle 'All' mapping safely to your API's initial state ("New").
-            */
             const isActive = category === value || (category === "All" && value === "New");
 
             return (
               <button
                 key={index}
-                // 3. Update the API query parameters inside your context upon click
                 onClick={() => setValue(category === "All" ? "New" : category)}
                 className={`flex-none text-[14px] duration-150 rounded-lg px-3 py-1 font-normal cursor-pointer whitespace-nowrap text-sm ${
                   isActive
-                    ? "bg-zinc-900 text-white font-medium shadow-sm" // Persistent active state styling matching real YouTube
+                    ? "bg-zinc-900 text-white font-medium shadow-sm"
                     : "bg-gray-100 text-zinc-950 hover:bg-gray-200"
                 }`}
               >

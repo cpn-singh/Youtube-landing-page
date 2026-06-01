@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 
 const Video = ({ video }) => {
+  const [duration, setDuration] = useState("");
+
   const snippet = video?.snippet;
 
   const currentVideoId =
@@ -20,8 +22,46 @@ const Video = ({ video }) => {
       snippet?.channelTitle || "YouTube"
     )}&background=random&size=128`;
 
+  useEffect(() => {
+    const fetchDuration = async () => {
+      try {
+        const response = await fetch(
+          `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${currentVideoId}&key=${import.meta.env.VITE_YOUTUBE_API_KEY}`
+        );
+
+        const data = await response.json();
+
+        const isoDuration =
+          data?.items?.[0]?.contentDetails?.duration;
+
+        if (!isoDuration) return;
+
+        const match = isoDuration.match(
+          /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/
+        );
+
+        const hours = parseInt(match?.[1] || 0);
+        const minutes = parseInt(match?.[2] || 0);
+        const seconds = parseInt(match?.[3] || 0);
+
+        const formatted =
+          hours > 0
+            ? `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
+            : `${minutes}:${String(seconds).padStart(2, "0")}`;
+
+        setDuration(formatted);
+      } catch (error) {
+        console.error("Duration fetch error:", error);
+      }
+    };
+
+    if (currentVideoId) {
+      fetchDuration();
+    }
+  }, [currentVideoId]);
+
   return (
-    <div className="max-w-sm overflow-hidden rounded-xl bg-white p-2 hover:bg-gray-50 cursor-pointer transition-all duration-200 ease-out">
+    <div className="w-full overflow-hidden rounded-xl bg-white hover:bg-gray-50 cursor-pointer transition-all duration-200 ease-out">
       <Link to={`/video/${currentVideoId}`}>
         <div className="flex flex-col">
           
@@ -32,10 +72,17 @@ const Video = ({ video }) => {
               alt={snippet?.title || "Thumbnail"}
               className="h-full w-full object-cover"
             />
+
+            {/* Duration Badge */}
+            {duration && (
+              <span className="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-medium px-2 py-1 rounded">
+                {duration}
+              </span>
+            )}
           </div>
 
           {/* Video Info */}
-          <div className="mt-3 flex items-start gap-3 px-1">
+          <div className="mt-3 flex items-start gap-3 px-2 pb-2">
             
             {/* Channel Avatar */}
             <img
